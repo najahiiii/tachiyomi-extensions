@@ -114,6 +114,10 @@ class BacaKomik : ParsedHttpSource() {
         manga.genre = genres.joinToString(", ")
         manga.status = parseStatus(document.select(".infox .spe span:contains(Status)").text())
         manga.description = descElement.select("p").text().substringAfter("bercerita tentang ")
+        val altName = document.selectFirst(".infox > .spe span:contains(Judul Alternatif) :not(b)")?.text().takeIf { it.isNullOrBlank().not() }
+        altName?.let {
+            manga.description = manga.description + "\n\n$altName"
+        }
         manga.thumbnail_url = document.select(".thumb > img:nth-child(1)").imgAttr()
         return manga
     }
